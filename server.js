@@ -1,14 +1,20 @@
 const express = require('express')
+const app = express();
 const dotenv = require('dotenv')
-
+const mongoose = require('mongoose')
+dotenv.config();
+const PORT = process.env.PORT || 8080
 //add connectedDB
 //add routes
 
-const app = express();
-const PORT = 3000;
+// ##############################################
+app.use(express.json())
 
+
+// ##############################################
 app.get('/', (req, res) => {
-    res.send("Welcome")
+    res.status(200)
+    res.send("Welcome to the homepage")
 })
 
 app.listen(PORT, () => {
