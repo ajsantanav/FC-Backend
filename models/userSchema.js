@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 //defined move Schema, what it should have and not
-const userRegistration = mongoose.Schema({
+const userSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -18,7 +18,7 @@ const userRegistration = mongoose.Schema({
 })
 
 //create the move model
-const Pokemon = mongoose.model('Pokemon', pokemonSchema);
+const Pokemon = mongoose.model('User', userSchema);
 
 
 //exports this file
