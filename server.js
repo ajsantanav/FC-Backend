@@ -1,10 +1,9 @@
-const express = require('express')
+const express = require('express');
 const app = express();
-const dotenv = require('dotenv')
-const mongoose = require('mongoose')
-dotenv.config();
-const PORT = process.env.PORT || 8080
-//add connectedDB
+const connect = require('./config/db'); //add connectedDB - check mark
+connect();
+
+const PORT = process.env.PORT || 8080; 
 //add routes
 
 // ##############################################
