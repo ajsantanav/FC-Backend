@@ -40,7 +40,7 @@ router.get('/:id', async (req, res) => {
 })
 /// Update
 
-router.update('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const updateUser = await Users.findByIdAndUpdate(req.params.id, req.body)
         res.json(updateUser)
