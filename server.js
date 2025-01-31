@@ -7,11 +7,10 @@ const User = require('./models/userSchema')
 connect();
 
 const PORT = process.env.PORT || 8080; 
-app.use('/api/users', userRoutes) //add routes
 
 // ##############################################
-app.use(express.json())
-
+app.use(express.json()) // this always goes before routes
+app.use('/api/users', userRoutes) //add routes
 
 // ##############################################
 app.get('/', (req, res) => {
