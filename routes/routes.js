@@ -133,6 +133,15 @@ router.post('/:id/characters', async (req, res) => {
     try {
         const { name, level, class: charClass, race, stats } = req.body;
 
+        if (!name || !level || !charClass || !race || !stats) {
+            return res.status(400).json({ message: "All character fields are required." });
+        }
+
+        const user = await Users.findById(req.params.id)
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
         const newCharacter = {
             name,
             level,
@@ -141,14 +150,47 @@ router.post('/:id/characters', async (req, res) => {
             stats
         };
 
+
         user.characters.push(newCharacter);
         await user.save(); 
+
+        return res.status(201).json(user.characters); 
     }
     catch (err) {
         res.status(500).json({ message: err.message })
     }
 })
 
+router.get('/:id/characters', async (req, res) => {
+    try {
+        const user = await Users.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
+        res.json(user.characters);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.delete('/:userId/characters/:characterId', async (req, res) => {
+    try {
+        const user = await Users.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        // Filter out the character to delete
+        user.characters = user.characters.filter(
+            (character) => character.id.toString() !== req.params.characterId
+        );
+
+        await user.save();
+        res.json({ message: "Character deleted successfully.", characters: user.characters });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;
