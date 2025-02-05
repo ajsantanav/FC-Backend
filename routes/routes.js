@@ -127,5 +127,28 @@ router.delete('/:id', async (req, res) => {
 
 })
 
+//// ############################## CHARACTER CRUD
+
+router.post('/:id/characters', async (req, res) => {
+    try {
+        const { name, level, class: charClass, race, stats } = req.body;
+
+        const newCharacter = {
+            name,
+            level,
+            class: charClass,
+            race,
+            stats
+        };
+
+        user.characters.push(newCharacter);
+        await user.save(); 
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
+
 
 module.exports = router;
