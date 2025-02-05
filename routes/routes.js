@@ -1,12 +1,12 @@
-const express = require('express');
-const app = express();
-const router = express.Router();
-const jwt = require('jsonwebtoken')
-const {check , validationResult} = require('express-validator')
-const Users = require("../models/userSchema");
-const User = require('../models/userSchema');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import { check, validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
+import User from '../models/userSchema.js';
+import Users from '../models/userSchema.js';
 ///C.R.U.D.
 
+const router = express.Router();
 //get all users?
 router.get('/', async (req, res) => { 
     try {
@@ -36,59 +36,75 @@ router.get('/', async (req, res) => {
 //     }
 // });
 
-router.post('/', 
+router.post(
+    '/',
     [
-        check('name', 'Name is required').not().isEmpty(),
-        check('email', 'Please include a valid email').isEmail(),
-        check('password','Please enter a password with 6 or more characters').isLength({ min: 6 }),
+      check('name', 'Name is required').not().isEmpty(),
+      check('email', 'Please include a valid email').isEmail(),
+      check(
+        'password',
+        'Please enter a password with 6 or more characters'
+      ).isLength({ min: 6 }),
     ],
-    async (req, res) => { 
-    console.log("Request Body:", req.body);
-    const errors = validationResult(req);
-
-    if(!errors.isEmpty()) // 
-    {
+    async (req, res) => {
+      //Check if any validation errors
+      const errors = validationResult(req);
+  
+      if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { name, email, password } = req.body;
-    try {
-
-        let createUser = await User.findOne({email});
-
-        if(createUser) {
-            return res.status(400).json({errors: [{ msg: 'User Already exists'}]})
+      }
+  
+      //Destructure our req
+      const { name, email, password } = req.body;
+  
+      try {
+        //Check is user already exists
+        let user = await User.findOne({ email });
+        //If they exist respond with error
+        if (user) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'User Already Exist' }] });
         }
-        createUser = new User({
-            name, email, password
+  
+        //Create a user
+        user = new User({
+          name,
+          email,
+          password,
         });
-        // encrypt password using bcrypt lower number = less encrypter. rec. 10-12
-        const salt = await bycript.genSalt(8);
-
-        //payload to use on the the front end
-        const payload = { 
-            user: {
-                id: createUser.id,
-            },
+  
+        //Encrypt password
+        const salt = await bcrypt.genSalt(10);
+  
+        user.password = await bcrypt.hash(password, salt);
+  
+        await user.save();
+  
+        //Creating payload (data for the front end) for jwt
+        const payload = {
+          user: {
+            id: user.id,
+          },
         };
-
-        //create token for the front and with jwet and signing
+  
+        //Creating a jwt, signing, and if there are no errors, sending token to the front end
         jwt.sign(
-            payload,
-            process.env.jwtSecret, //secret token
-            { expiresIn: 5000 }, // expiration
-            (err, token) => {
-                if (err) throw err;
-                res.json({token});
-            }
-        )
-        console.log(req.body);
-        res.status(201).json(createUser);
-    }
-    catch (err) {
+          payload,
+          process.env.jwtSecret,
+          { expiresIn: 3600 }, 
+          (err, token) => {
+            if (err) throw err;
+  
+            res.json({ token });
+          }
+        );
+      } catch (err) {
+        console.error(err);
         res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+      }
     }
-});
+  );
 
 
 /// Read
@@ -193,4 +209,4 @@ router.delete('/:userId/characters/:characterId', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

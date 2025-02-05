@@ -1,5 +1,5 @@
 // import jwt from 'jsonwebtoken';
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 export default (req, res, next) => {
     const token = req.header('x-auth-token')
@@ -10,7 +10,7 @@ export default (req, res, next) => {
     try {
         const decode = jwt.verify(token, process.env.jwtSecret);
 
-        req.user = decoded.user;
+        req.user = decode.user;
 
         next();
     }

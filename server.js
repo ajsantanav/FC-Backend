@@ -1,17 +1,22 @@
-const express = require('express');
+import express from 'express';
 const app = express();
-const connect = require('./config/db'); //add connectedDB - check mark
-const userRoutes = require('./routes/routes');
-const firstUser = require('./config/seed');
-const User = require('./models/userSchema')
+import connect from './config/db.js';
 connect();
+import userRoutes from './routes/routes.js';
+import firstUser from './config/seed.js';
+import User from './models/userSchema.js'
+import authRoutes from './routes/auth.js';
+
+
+
+
 
 const PORT = process.env.PORT || 8080; 
 
 // ##############################################
 app.use(express.json()) // this always goes before routes
 app.use('/api/users', userRoutes) //add routes
-
+app.use('/api/auth', authRoutes);
 // ##############################################
 app.get('/', (req, res) => {
     res.status(200)

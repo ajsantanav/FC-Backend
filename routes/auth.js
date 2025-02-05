@@ -1,6 +1,6 @@
 import express from 'express';
-import User from '../../models/User.mjs';
-import auth from '../../middleware/auth.mjs';
+import User from '../models/userSchema.js';
+import auth from '../middleware/auth.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { check, validationResult } from 'express-validator';
@@ -8,12 +8,13 @@ import { check, validationResult } from 'express-validator';
 const router = express.Router();
 
 
+
 router.get('/', auth, async (req, res) => {
   try {
-    //Get user info from database using user id (Except password)
+
     const user = await User.findById(req.user.id).select('-password');
 
-    //Send user info to front end
+
     res.json(user);
   } catch (err) {
     console.error(err);
@@ -21,7 +22,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-
+//log in
 router.post(
   '/',
   [
@@ -72,7 +73,7 @@ router.post(
       jwt.sign(
         payload,
         process.env.jwtSecret,
-        { expiresIn: 3600 },
+        /// Adrian you remove the expire
         (err, token) => {
           if (err) throw err;
 

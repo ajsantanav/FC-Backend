@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-
+import mongoose from "mongoose";
 
 const characterSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -7,15 +6,14 @@ const characterSchema = new mongoose.Schema({
     class: { type: String, required: true },
     race: { type: String, required: true },
     stats: {
-        strength: { type: Number, default: 10 },
-        dexterity: { type: Number, default: 10 },
-        constitution: { type: Number, default: 10 },
-        intelligence: { type: Number, default: 10 },
-        wisdom: { type: Number, default: 10 },
-        charisma: { type: Number, default: 10 }
+        strength: { type: Number, default: 10, min: 8, max: 20 },
+        dexterity: { type: Number, default: 10, min: 8, max: 20 },
+        constitution: { type: Number, default: 10, min: 8, max: 20 },
+        intelligence: { type: Number, default: 10, min: 8, max: 20 },
+        wisdom: { type: Number, default: 10, min: 8, max: 20 },
+        charisma: { type: Number, default: 10, min: 8, max: 20 }
     }
 });
-
 
 //defined move Schema, what it should have and not
 const userSchema = mongoose.Schema({
@@ -30,4 +28,4 @@ const User = mongoose.model('User', userSchema);
 
 
 //exports this file
-module.exports = User
+export default User;

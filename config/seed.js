@@ -36,4 +36,4 @@ const userInfo = [
     },
 ];
 
-module.exports = userInfo
+export default userInfo;
