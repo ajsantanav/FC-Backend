@@ -43,5 +43,5 @@ app.get('/users/seed', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT} - Adrian`)
+    console.log(`Server is running on port ${PORT}`)
 })
